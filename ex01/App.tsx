@@ -3,14 +3,16 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   const [buttonPressed, setButtonPressed] = useState(false);
-  const BtnPress = () => {
-    console.log('Button pressed!');
-    setButtonPressed(true);
+
+  const handlePress = () => {
+    console.log('Button pressed');
+    setButtonPressed((wasPressed) => !wasPressed);
   };
+
   return (
     <View style={styles.container}>
-      <Text>{ buttonPressed ? 'Hello, World!' : 'A simple text' }</Text>
-      <Button title="Press me" onPress={BtnPress} />
+      <Text>{buttonPressed ? 'Hello World!' : 'A simple text'}</Text>
+      <Button title="Press me" onPress={handlePress} />
     </View>
   );
 }

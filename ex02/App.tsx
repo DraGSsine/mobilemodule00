@@ -1,4 +1,6 @@
+import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const renderBtn = (value: string) => {
   return (
@@ -13,71 +15,75 @@ const renderBtn = (value: string) => {
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <StatusBar style="light" />
 
-      <View style={styles.appBar}>
-        <Text style={styles.title}>Calculator</Text>
+        <SafeAreaView style={styles.appBar} edges={['top', 'left', 'right']}>
+          <Text style={styles.title}>Calculator</Text>
+        </SafeAreaView>
+
+        <View style={styles.results}>
+          <Text style={styles.expression}>0</Text>
+          <Text style={styles.result}>0</Text>
+        </View>
+
+        <SafeAreaView style={styles.controls} edges={['bottom', 'left', 'right']}>
+          <View style={styles.row}>
+            {renderBtn('7')}
+            {renderBtn('8')}
+            {renderBtn('9')}
+            {renderBtn('/')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('4')}
+            {renderBtn('5')}
+            {renderBtn('6')}
+            {renderBtn('*')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('1')}
+            {renderBtn('2')}
+            {renderBtn('3')}
+            {renderBtn('-')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('0')}
+            {renderBtn('.')}
+            {renderBtn('=')}
+            {renderBtn('+')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('AC')}
+            {renderBtn('C')}
+          </View>
+        </SafeAreaView>
       </View>
-
-      <View style={styles.results}>
-        <Text>0</Text>
-        <Text>0</Text>
-      </View>
-
-      <View style={styles.controls}>
-
-        <View style={styles.row}>
-          {renderBtn('7')}
-          {renderBtn('8')}
-          {renderBtn('9')}
-          {renderBtn('/')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('4')}
-          {renderBtn('5')}
-          {renderBtn('6')}
-          {renderBtn('*')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('1')}
-          {renderBtn('2')}
-          {renderBtn('3')}
-          {renderBtn('-')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('0')}
-          {renderBtn('.')}
-          {renderBtn('=')}
-          {renderBtn('+')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('AC')}
-          {renderBtn('C')}
-        </View>
-
-      </View>
-
-    </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
 
   appBar: {
-    padding: 20,
+    width: '100%',
+    padding: 16,
     alignItems: 'center',
+    backgroundColor: '#3f51b5',
   },
 
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#ffffff',
   },
 
   results: {
@@ -87,7 +93,18 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
+  expression: {
+    fontSize: 24,
+    color: '#555555',
+  },
+
+  result: {
+    fontSize: 36,
+    fontWeight: '600',
+  },
+
   controls: {
+    width: '100%',
     padding: 10,
   },
 
@@ -98,5 +115,6 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     margin: 3,
+    minWidth: 0,
   },
 });

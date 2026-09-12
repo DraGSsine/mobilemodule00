@@ -1,33 +1,60 @@
 import { useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { evaluate } from 'mathjs';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
+import { appendToken, calculateExpression, isOperator } from './calculator';
+
+const BUTTON_ROWS = [
+  ['7', '8', '9', '/'],
+  ['4', '5', '6', '*'],
+  ['1', '2', '3', '-'],
+  ['0', '.', '=', '+'],
+  ['AC', 'C'],
+];
 
 export default function App() {
   const [result, setResult] = useState<string>('0');
   const [expression, setExpression] = useState<string>('');
+  const [hasEvaluated, setHasEvaluated] = useState(false);
 
-  const renderBtn = (value: string) => {
+  const renderButton = (value: string) => {
     const handlePress = () => {
+      console.log(value);
+
       if (value === 'AC') {
         setResult('0');
         setExpression('');
+        setHasEvaluated(false);
       } else if (value === 'C') {
-        setExpression(expression.slice(0, -1));
+        setExpression((currentExpression) => currentExpression.slice(0, -1));
+        setResult('0');
+        setHasEvaluated(false);
       } else if (value === '=') {
         try {
-          const evalResult = eval(expression);
-          setResult(evalResult.toString());
-          setExpression('');
-        } catch (error) {
+          setResult(calculateExpression(expression));
+          setHasEvaluated(true);
+        } catch {
           setResult('Error');
-          setExpression('');
+          setHasEvaluated(true);
         }
       } else {
-        setExpression(expression + value);
+        if (hasEvaluated) {
+          const nextExpression = isOperator(value) && result !== 'Error'
+            ? appendToken(result, value)
+            : appendToken('', value);
+
+          setExpression(nextExpression);
+          setResult('0');
+          setHasEvaluated(false);
+        } else {
+          setExpression((currentExpression) => appendToken(currentExpression, value));
+        }
       }
     };
+
     return (
-      <View style={styles.button}>
+      <View key={value} style={styles.button}>
         <Button
           title={value}
           onPress={handlePress}
@@ -35,72 +62,64 @@ export default function App() {
       </View>
     );
   };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <StatusBar style="light" />
 
-      <View style={styles.appBar}>
-        <Text style={styles.title}>Calculator</Text>
+        <SafeAreaView style={styles.appBar} edges={['top', 'left', 'right']}>
+          <Text style={styles.title}>Calculator</Text>
+        </SafeAreaView>
+
+        <View style={styles.results}>
+          <Text
+            style={styles.expression}
+            numberOfLines={2}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+          >
+            {expression || '0'}
+          </Text>
+          <Text
+            style={[styles.result, result === 'Error' && styles.error]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+          >
+            {result}
+          </Text>
+        </View>
+
+        <SafeAreaView style={styles.controls} edges={['bottom', 'left', 'right']}>
+          {BUTTON_ROWS.map((row, rowIndex) => (
+            <View key={`row-${rowIndex}`} style={styles.row}>
+              {row.map(renderButton)}
+            </View>
+          ))}
+        </SafeAreaView>
       </View>
-
-      <View style={styles.results}>
-        <Text>{result}</Text>
-        <Text>{expression}</Text>
-      </View>
-
-      <View style={styles.controls}>
-
-        <View style={styles.row}>
-          {renderBtn('7')}
-          {renderBtn('8')}
-          {renderBtn('9')}
-          {renderBtn('/')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('4')}
-          {renderBtn('5')}
-          {renderBtn('6')}
-          {renderBtn('*')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('1')}
-          {renderBtn('2')}
-          {renderBtn('3')}
-          {renderBtn('-')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('0')}
-          {renderBtn('.')}
-          {renderBtn('=')}
-          {renderBtn('+')}
-        </View>
-
-        <View style={styles.row}>
-          {renderBtn('AC')}
-          {renderBtn('C')}
-        </View>
-
-      </View>
-
-    </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
 
   appBar: {
-    padding: 20,
+    width: '100%',
+    padding: 16,
     alignItems: 'center',
+    backgroundColor: '#3f51b5',
   },
 
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#ffffff',
   },
 
   results: {
@@ -110,7 +129,26 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
+  expression: {
+    width: '100%',
+    fontSize: 24,
+    color: '#555555',
+    textAlign: 'right',
+  },
+
+  result: {
+    width: '100%',
+    fontSize: 36,
+    fontWeight: '600',
+    textAlign: 'right',
+  },
+
+  error: {
+    color: '#b00020',
+  },
+
   controls: {
+    width: '100%',
     padding: 10,
   },
 
@@ -121,5 +159,6 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     margin: 3,
+    minWidth: 0,
   },
 });
