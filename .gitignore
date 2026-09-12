@@ -1,0 +1,24 @@
+# Dependencies in every exercise
+**/node_modules/
+
+# Expo generated files
+**/.expo/
+**/dist/
+**/web-build/
+**/expo-env.d.ts
+
+# TypeScript build information
+**/*.tsbuildinfo
+
+# Debug logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Local environment and OS files
+**/.env*.local
+.DS_Store
+Thumbs.db
+
+# Legacy local exercise folder; Exercise 03 is submitted as calculator_app
+/ex03/
