@@ -37,6 +37,7 @@ export default function App() {
       }
     } else {
       setExpression(expression + value);
+      console.log(expression + value);
     }
   };
 
