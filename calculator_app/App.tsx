@@ -3,14 +3,6 @@ import { evaluate } from 'mathjs';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-const BUTTON_ROWS = [
-  ['7', '8', '9', '/'],
-  ['4', '5', '6', '*'],
-  ['1', '2', '3', '-'],
-  ['0', '.', '=', '+'],
-  ['AC', 'C'],
-];
-
 export default function App() {
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState('0');
@@ -40,6 +32,14 @@ export default function App() {
     }
   };
 
+  const renderBtn = (value: string) => {
+    return (
+      <View style={styles.button}>
+        <Button title={value} onPress={() => handlePress(value)} />
+      </View>
+    );
+  };
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -53,15 +53,38 @@ export default function App() {
         </View>
 
         <View style={styles.controls}>
-          {BUTTON_ROWS.map((row, rowIndex) => (
-            <View key={rowIndex} style={styles.row}>
-              {row.map((value) => (
-                <View key={value} style={styles.button}>
-                  <Button title={value} onPress={() => handlePress(value)} />
-                </View>
-              ))}
-            </View>
-          ))}
+          <View style={styles.row}>
+            {renderBtn('7')}
+            {renderBtn('8')}
+            {renderBtn('9')}
+            {renderBtn('/')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('4')}
+            {renderBtn('5')}
+            {renderBtn('6')}
+            {renderBtn('*')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('1')}
+            {renderBtn('2')}
+            {renderBtn('3')}
+            {renderBtn('-')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('0')}
+            {renderBtn('.')}
+            {renderBtn('=')}
+            {renderBtn('+')}
+          </View>
+
+          <View style={styles.row}>
+            {renderBtn('AC')}
+            {renderBtn('C')}
+          </View>
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -74,6 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   appBar: {
+    width: '100%',
     padding: 16,
     alignItems: 'center',
     backgroundColor: '#3f51b5',
@@ -91,12 +115,14 @@ const styles = StyleSheet.create({
   },
   expression: {
     fontSize: 24,
+    color: '#555555',
   },
   result: {
     fontSize: 36,
     fontWeight: '600',
   },
   controls: {
+    width: '100%',
     padding: 10,
   },
   row: {
@@ -105,5 +131,6 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     margin: 3,
+    minWidth: 0,
   },
 });
