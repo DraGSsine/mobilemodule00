@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,19 +15,17 @@ const renderBtn = (value: string) => {
 export default function App() {
   return (
     <SafeAreaProvider>
-      <View style={styles.container}>
-        <StatusBar style="light" />
-
-        <SafeAreaView style={styles.appBar} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.appBar}>
           <Text style={styles.title}>Calculator</Text>
-        </SafeAreaView>
+        </View>
 
         <View style={styles.results}>
           <Text style={styles.expression}>0</Text>
           <Text style={styles.result}>0</Text>
         </View>
 
-        <SafeAreaView style={styles.controls} edges={['bottom', 'left', 'right']}>
+        <View style={styles.controls}>
           <View style={styles.row}>
             {renderBtn('7')}
             {renderBtn('8')}
@@ -61,8 +58,8 @@ export default function App() {
             {renderBtn('AC')}
             {renderBtn('C')}
           </View>
-        </SafeAreaView>
-      </View>
+        </View>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
